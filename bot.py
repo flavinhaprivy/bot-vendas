@@ -404,7 +404,7 @@ def main():
 
     # Captura de mídias em modo de captura
     app.add_handler(MessageHandler(
-        filters.PHOTO | filters.VIDEO | filters.AUDIO | filters.VOICE | filters.DOCUMENT,
+        filters.PHOTO | filters.VIDEO | filters.AUDIO | filters.VOICE | filters.Document,
         capturar_midia
     ))
 

@@ -287,12 +287,12 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 
 # ── main ───────────────────────────────────────────────────
-def main():
+async def main():
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.ALL & ~filters.COMMAND, handle))
     logger.info("✅ Bot rodando!")
-    app.run_polling()
+    await app.run_polling()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

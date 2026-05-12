@@ -34,7 +34,7 @@ AUDIO_2 = os.getenv("AUDIO_2", "AUDIO_2_FILE_ID")
 AUDIO_3 = os.getenv("AUDIO_3", "AUDIO_3_FILE_ID")
 VIDEO_1 = os.getenv("VIDEO_1", "VIDEO_1_FILE_ID")
 VIDEO_2 = os.getenv("VIDEO_2", "VIDEO_2_FILE_ID")
-IMAGE_1 = os.getenv("IMAGE_1", "IMAGE_1_FILE_ID")
+IMAGE_1 = AgACAgEAAxkBAANcagOiTrmhMjEPiiWMLWWrAAGqaU2gAAIMDGsbI1oRRNwOpLHrWtClAQADAgADdwADOwQ
 
 # ── Adicione mais mídias aqui se precisar ─────────────────
 # AUDIO_4 = os.getenv("AUDIO_4", "AUDIO_4_FILE_ID")

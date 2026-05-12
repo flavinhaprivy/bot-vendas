@@ -75,6 +75,13 @@ async def capturar_id(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 
 async def capturar_midia(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     """Recebe a mídia e retorna o file_id."""
+    logger.info(
+        "capturar_midia chamado | capturando=%s | user_id=%s | chat_id=%s",
+        ctx.user_data.get("capturando"),
+        update.effective_user.id if update.effective_user else None,
+        update.effective_chat.id if update.effective_chat else None,
+    )
+
     if not ctx.user_data.get("capturando"):
         return  # Não está em modo de captura, ignora
 
@@ -394,6 +401,12 @@ def main():
     # Comandos
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("capturar_id", capturar_id))
+
+    # Captura de mídias em modo de captura
+    app.add_handler(MessageHandler(
+        filters.PHOTO | filters.VIDEO | filters.AUDIO | filters.VOICE | filters.DOCUMENT,
+        capturar_midia
+    ))
 
     # Mensagens e mídias — o handler principal decide o que fazer
     app.add_handler(MessageHandler(filters.ALL & ~filters.COMMAND, handle))

@@ -20,7 +20,7 @@ from telegram.ext import (
 # ══════════════════════════════════════════════════════════
 #   CONFIGURAÇÕES  ←  preencha aqui ou nas variáveis do Railway
 # ══════════════════════════════════════════════════════════
-TOKEN        = os.getenv("TOKEN",        "SEU_TOKEN_AQUI")
+TOKEN        = os.getenv("TOKEN",        "8790169082:AAEqhlwMh5X-6pPGzjp6SgE9rHe5IO5nHvY")
 PIX_KEY      = os.getenv("PIX_KEY",      "SEU_PIX_AQUI")
 PIX_VALUE    = os.getenv("PIX_VALUE",    "R$ 00,00")
 LINK_ENTREGA = os.getenv("LINK_ENTREGA", "https://SEU_LINK_AQUI")

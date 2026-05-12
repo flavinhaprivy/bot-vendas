@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Bot de Vendas - Telegram
-Hospedado no Railway (gratuito) — Python 3.11 + PTB 21.9
+Hospedado no Railway — Python 3.11 + PTB 21.9
 """
 
 import asyncio
@@ -20,17 +20,32 @@ from telegram.ext import (
 # ══════════════════════════════════════════════════════════
 #   CONFIGURAÇÕES  ←  preencha aqui ou nas variáveis do Railway
 # ══════════════════════════════════════════════════════════
-TOKEN        = os.getenv("TOKEN",        "8790169082:AAEqhlwMh5X-6pPGzjp6SgE9rHe5IO5nHvY")
+TOKEN        = os.getenv("TOKEN",        "SEU_TOKEN_AQUI")
 PIX_KEY      = os.getenv("PIX_KEY",      "SEU_PIX_AQUI")
 PIX_VALUE    = os.getenv("PIX_VALUE",    "R$ 00,00")
 LINK_ENTREGA = os.getenv("LINK_ENTREGA", "https://SEU_LINK_AQUI")
 
+# ── File IDs das mídias ───────────────────────────────────
+# Use o comando /capturar_id para descobrir o file_id de cada mídia
+# Envie a mídia pro bot após ativar o modo de captura com /capturar_id
+# Cole os IDs nas variáveis do Railway ou diretamente aqui
 AUDIO_1 = os.getenv("AUDIO_1", "AUDIO_1_FILE_ID")
 AUDIO_2 = os.getenv("AUDIO_2", "AUDIO_2_FILE_ID")
 AUDIO_3 = os.getenv("AUDIO_3", "AUDIO_3_FILE_ID")
 VIDEO_1 = os.getenv("VIDEO_1", "VIDEO_1_FILE_ID")
 VIDEO_2 = os.getenv("VIDEO_2", "VIDEO_2_FILE_ID")
 IMAGE_1 = os.getenv("IMAGE_1", "IMAGE_1_FILE_ID")
+
+# ── Adicione mais mídias aqui se precisar ─────────────────
+# AUDIO_4 = os.getenv("AUDIO_4", "AUDIO_4_FILE_ID")
+# VIDEO_3 = os.getenv("VIDEO_3", "VIDEO_3_FILE_ID")
+# IMAGE_2 = os.getenv("IMAGE_2", "IMAGE_2_FILE_ID")
+# ══════════════════════════════════════════════════════════
+
+# ── Modo de captura de File IDs ───────────────────────────
+# Mude para True temporariamente para capturar os file_ids das mídias
+# Depois volte para False antes de subir para produção
+MODO_CAPTURA = os.getenv("MODO_CAPTURA", "false").lower() == "true"
 # ══════════════════════════════════════════════════════════
 
 logging.basicConfig(
@@ -43,7 +58,72 @@ logger = logging.getLogger(__name__)
 user_state: dict[int, int] = {}
 
 
-# ── helpers de ação ───────────────────────────────────────
+# ══════════════════════════════════════════════════════════
+#   CAPTURA DE FILE IDs
+#   Use /capturar_id e envie qualquer mídia pro bot.
+#   O file_id aparecerá no terminal e será enviado de volta pra você.
+# ══════════════════════════════════════════════════════════
+
+async def capturar_id(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """Ativa o modo de captura de file_id para o usuário."""
+    ctx.user_data["capturando"] = True
+    await update.message.reply_text(
+        "📎 Modo de captura ativado!\n\n"
+        "Agora envie uma foto, áudio ou vídeo direto no chat.\n"
+        "Vou te devolver o file_id dela. 📋"
+    )
+
+async def capturar_midia(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
+    """Recebe a mídia e retorna o file_id."""
+    if not ctx.user_data.get("capturando"):
+        return  # Não está em modo de captura, ignora
+
+    msg = update.message
+    file_id = None
+    tipo = None
+
+    if msg.photo:
+        file_id = msg.photo[-1].file_id
+        tipo = "🖼 IMAGE"
+    elif msg.voice:
+        file_id = msg.voice.file_id
+        tipo = "🎙 VOICE"
+    elif msg.audio:
+        file_id = msg.audio.file_id
+        tipo = "🎵 AUDIO"
+    elif msg.video:
+        file_id = msg.video.file_id
+        tipo = "🎬 VIDEO"
+    elif msg.video_note:
+        file_id = msg.video_note.file_id
+        tipo = "📹 VIDEO_NOTE"
+    elif msg.document:
+        file_id = msg.document.file_id
+        if msg.document.mime_type and msg.document.mime_type.startswith("image/"):
+            tipo = "🖼 IMAGE"
+        else:
+            tipo = "📄 DOCUMENT"
+
+    if file_id:
+        logger.info(f"FILE_ID CAPTURADO | {tipo} | {file_id}")
+        await update.message.reply_text(
+            f"{tipo} — File ID capturado! ✅\n\n"
+            f"`{file_id}`\n\n"
+            "Cole esse valor na variável correspondente no Railway. 🚀",
+            parse_mode="Markdown"
+        )
+        ctx.user_data["capturando"] = False
+    else:
+        await update.message.reply_text(
+            "⚠️ Não detectei uma mídia válida.\n"
+            "Envie uma foto, áudio ou vídeo direto no chat.\n"
+            "Se você enviou texto, tente novamente com a mídia correta."
+        )
+
+
+# ══════════════════════════════════════════════════════════
+#   HELPERS DE AÇÃO
+# ══════════════════════════════════════════════════════════
 
 async def typing(chat_id: int, ctx: ContextTypes.DEFAULT_TYPE, secs: float = 1.2):
     await ctx.bot.send_chat_action(chat_id=chat_id, action="typing")
@@ -70,7 +150,9 @@ async def msg(
     await update.message.reply_text(text, parse_mode=parse_mode)
 
 
-# ── /start ────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════
+#   /start
+# ══════════════════════════════════════════════════════════
 
 async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
@@ -83,13 +165,20 @@ async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     )
 
 
-# ── handler principal ─────────────────────────────────────
+# ══════════════════════════════════════════════════════════
+#   HANDLER PRINCIPAL — FLUXO DE VENDAS
+# ══════════════════════════════════════════════════════════
 
 async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid  = update.effective_user.id
     chat = update.effective_chat.id
     text = (update.message.text or "").strip()
     step = user_state.get(uid, 0)
+
+    # ── Verifica modo de captura antes de entrar no fluxo ─
+    if ctx.user_data.get("capturando"):
+        await capturar_midia(update, ctx)
+        return
 
     # ── 1 · recebe o nome ─────────────────────────────────
     if step == 1:
@@ -165,7 +254,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await msg(update, ctx,
             "Você está online agora… isso é bom sinal! 😏\n\n"
             "Quem compra NUNCA se arrepende.\n\n"
-            "Vou te mandar mais uma coisa antes do pagamento… aguarda! 🎧",
+            "Vou te mandar mais uma coisinha antes do pagamento… aguarda! 🎧",
             delay=2
         )
 
@@ -229,7 +318,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     elif step == 11:
         user_state[uid] = 12
         await ctx.bot.send_photo(chat_id=chat, photo=IMAGE_1)
-        await asyncio.sleep(120)   # 2 minutos de suspense
+        await asyncio.sleep(120)  # 2 minutos de suspense
         await typing(chat, ctx)
         await update.message.reply_text(
             "Ainda pensando? 🤔\n\nOlha, esse preço é por TEMPO LIMITADO…"
@@ -295,14 +384,25 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await msg(update, ctx, "Oi! Digite /start para começar. 😊")
 
 
-# ── main ──────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════
+#   MAIN
+# ══════════════════════════════════════════════════════════
 
 def main():
     app = Application.builder().token(TOKEN).build()
+
+    # Comandos
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("capturar_id", capturar_id))
+
+    # Mensagens e mídias — o handler principal decide o que fazer
     app.add_handler(MessageHandler(filters.ALL & ~filters.COMMAND, handle))
+
     logger.info("✅ Bot rodando!")
-    app.run_polling()   # PTB gerencia o event loop internamente
+    if MODO_CAPTURA:
+        logger.info("⚠️  MODO CAPTURA ATIVO — use /capturar_id para obter file_ids")
+
+    app.run_polling()
 
 
 if __name__ == "__main__":

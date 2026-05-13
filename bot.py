@@ -7,7 +7,7 @@ Hospedado no Railway — Python 3.11 + PTB 21.9
 import asyncio
 import logging
 import os
-
+import aiohttp
 
 from telegram import Update
 from telegram.ext import (

@@ -7,7 +7,7 @@ Hospedado no Railway — Python 3.11 + PTB 21.9
 import asyncio
 import logging
 import os
-import aiohttp
+
 
 from telegram import Update
 from telegram.ext import (
@@ -306,9 +306,6 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     # ── 11 · Gera link de checkout ───────────────────────────
     elif step == 11:
         user_state[uid] = 12
-        nome = (update.effective_user.first_name or "Cliente")
-        email = f"user_{uid}@telegram.bot"
-        
         await msg(update, ctx,
             "Te manda o acesso e a gente combina certinho! 💕\n\n"
             "Deixa eu gerar seu link de pagamento... ⏳"
@@ -363,4 +360,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

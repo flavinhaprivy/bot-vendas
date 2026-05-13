@@ -70,7 +70,8 @@ IMAGE_2 = "AgACAgEAAxkBAAPHagO9vMPmxnJHayQerq_GdJGAVJoAAhIMaxvagiFEDAqpCxdRkJABA
 MODO_CAPTURA = os.getenv("MODO_CAPTURA", "false").lower() == "true"
 
 # ── API Nexus (Pagamento) ─────────────────────────────
-X-API-KEYX = os.getenv("NEXUS_API_KEY", "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2")
+NEXUS_API_KEY= os.getenv("NEXUS_API_KEY", "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2")
+NEXUS_API_KEY = "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2"
 # ══════════════════════════════════════════════════════════
 
 logging.basicConfig(
@@ -93,10 +94,11 @@ user_checkout_link: dict[int, str] = {}
 
 async def gerar_checkout_link(valor: float = 19.99, email: str = "cliente@email.com", nome: str = "Cliente") -> str:
     """Gera um link de checkout via API Nexus (tipo madbot)."""
-    url = "https://nexuspag.com/api/pix/create"
+    url = "https://nexuspag.com/api/pix/chelkout"
     
     headers = {
-        "Authorization": x-api-key,nxp_live_485fbe30a64096a7d59e14f0def0ae9bd7712a128677b3d51f7b50dd5809c3da
+
+        "Authorization": NEXUS_API_KEY, "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2"
         "Content-Type": "application/json"
     }
     

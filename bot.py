@@ -69,79 +69,6 @@ IMAGE_2 = "AgACAgEAAxkBAAPHagO9vMPmxnJHayQerq_GdJGAVJoAAhIMaxvagiFEDAqpCxdRkJABA
 # Depois volte para False antes de subir para produção
 MODO_CAPTURA = os.getenv("MODO_CAPTURA", "false").lower() == "true"
 
-# ── API Nexus (Pagamento) ─────────────────────────────
-NEXUS_API_KEY= os.getenv("NEXUS_API_KEY", "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2")
-NEXUS_API_KEY = "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2"
-# ══════════════════════════════════════════════════════════
-
-logging.basicConfig(
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    level=logging.INFO,
-)
-logger = logging.getLogger(__name__)
-
-# Guarda em qual passo cada usuário está
-user_state: dict[int, int] = {}
-# Armazena o link de checkout temporário por usuário
-user_checkout_link: dict[int, str] = {}
-
-
-# ══════════════════════════════════════════════════════════
-#   CAPTURA DE FILE IDs
-#   Use /capturar_id e envie qualquer mídia pro bot.
-#   O file_id aparecerá no terminal e será enviado de volta pra você.
-# ══════════════════════════════════════════════════════════
-
-async def gerar_checkout_link(valor: float = 19.99, email: str = "cliente@email.com", nome: str = "Cliente") -> str:
-    """Gera um link de checkout via API Nexus (tipo madbot)."""
-    url = "https://nexuspag.com/api/pix/chelkout"
-    
-    headers = {
-
-        "Authorization": NEXUS_API_KEY, "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2"
-        "Content-Type": "application/json"
-    }
-    
-    # Payload inspirado em madbot
-    payload = {
-        "api_key": NEXUS_API_KEY,
-        "amount": int(valor * 100),  # Nexus usa centavos (1999 = R$ 19.99)
-        "customer": {
-            "email": email,
-            "name": nome
-        },
-        "description": "Pacote Exclusivo",
-        "metadata": {
-            "source": "telegram_bot"
-        }
-    }
-    
-    try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(url, json=payload, headers=headers, timeout=aiohttp.ClientTimeout(total=10)) as resp:
-                if resp.status in [200, 201]:
-                    data = await resp.json()
-                    # Tenta vários nomes de campo que a API pode retornar
-                    link = (
-                        data.get("checkout_url") or 
-                        data.get("url") or 
-                        data.get("payment_link") or
-                        data.get("link") or
-                        data.get("order_url")
-                    )
-                    if link:
-                        logger.info(f"✅ Checkout Nexus gerado: {link}")
-                        return link
-                    else:
-                        logger.error(f"Resposta Nexus sem link: {data}")
-                        return None
-                else:
-                    error_text = await resp.text()
-                    logger.error(f"❌ Erro API Nexus ({resp.status}): {error_text}")
-                    return None
-    except Exception as e:
-        logger.error(f"❌ Erro ao conectar com Nexus: {e}")
-        return None
 
 
 async def capturar_id(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
@@ -436,3 +363,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

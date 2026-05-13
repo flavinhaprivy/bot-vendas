@@ -277,7 +277,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_2)
         await asyncio.sleep(8)
         await typing(chat, ctx)
-        await update.message.reply_text(
+        await msg(update, ctx,
             "Gostou, lindo? posso mandar outro? \n\n",
             delay=2
         )

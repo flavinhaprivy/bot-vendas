@@ -1,2 +1,11 @@
-﻿Procfile.txt
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+.idea/
+.vscode/
+*.log
+Procfile.txt
 python-version.txt

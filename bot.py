@@ -302,15 +302,17 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             "Se você comprar agora podemos marcar uma chamadinha de vídeo ou até mesmo se encontrar possoalmente",
             delay=2
         )
- 
-    # ── 11 · Gera link de checkout ───────────────────────────
-    elif step == 11:
+ # ── 1 · recebe o nome ─────────────────────────────────
+    if step == 11:
         user_state[uid] = 12
+        nome = text.split()[0].capitalize() if text else (update.effective_user.first_name or "você")
         await msg(update, ctx,
             "Te manda o acesso e a gente combina certinho! 💕\n\n"
             "Deixa eu gerar seu link de pagamento... ⏳"
+            f"Que nome lindo, {nome}! 🥰\n\n"
+             "Tudo bem com você?"
         )
-        
+    
       # ── 11 · Gera link de checkout ───────────────────────────
     elif step == 12:
         user_state[uid] = 99

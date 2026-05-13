@@ -268,13 +268,15 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await msg(update, ctx, f"{LINK_ENTREGA} \n\n")
         return
 
-    # 99 - fim
+    # 99 - fim (encerrar fluxo)
     if step == 99:
         await msg(update, ctx, "Já te enviei tudo! 😊 Qualquer dúvida é só chamar aqui. 💛")
+        user_state.pop(uid, None)  # evita reentrar/loopar no estado final
         return
 
-    # fallback
-    await msg(update, ctx, "Oi! Digite /start para começar. 😊")
+
+    
+   
 
 
 # ══════════════════════════════════════════════════════════

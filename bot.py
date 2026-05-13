@@ -17,8 +17,8 @@ from telegram.ext import (
 # ══════════════════════════════════════════════════════════
 # CONFIGURAÇÕES
 # ══════════════════════════════════════════════════════════
-TOKEN        = os.getenv("TOKEN",        "8790169082:AAEqhlwMh5X-6pPGzjp6SgE9rHe5IO5nHvY")
-LINK_ENTREGA = os.getenv("LINK_ENTREGA", "https://t.me/Flavinahbot")
+TOKEN        = os.environ["TOKEN"]
+LINK_ENTREGA = os.getenv("LINK_ENTREGA", "https://t.me/seu_canal_aqui")
 
 # ── File IDs das mídias ───────────────────────────────────
 AUDIO_1 = "AwACAgEAAxkBAAPDagO9XdZYKv9_M-_F4GAF1B_d8-0AAnwGAALagiFEYK8SjDXgbrA7BA"

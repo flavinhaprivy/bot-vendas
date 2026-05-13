@@ -438,6 +438,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     # ── 13 · envia PIX ────────────────────────────────────
     elif step == 22:
         user_state[uid] = 23
+        await ctx.bot.send_link(chat_id=chat, LINK_ENTREGA=LINK_ENTREGA)
         await msg(update, ctx, "SHOW! Preparando seu pagamento… 💳")
         await msg(update, ctx,
             "📲 *PAGAMENTO VIA PIX*\n\n"

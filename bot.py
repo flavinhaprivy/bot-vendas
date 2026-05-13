@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""Bot de Vendas - Telegram
-Hospedado no Railway — Python 3.11 + PTB 21.9
-"""
+"""Bot de Vendas - Telegram"""
 
 import asyncio
 import logging
@@ -11,69 +9,60 @@ from telegram import Update
 from telegram.ext import (
     Application,
     CommandHandler,
-    ContextTypes,
     MessageHandler,
+    ContextTypes,
     filters,
 )
-
-# Logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.INFO,
-)
-logger = logging.getLogger(__name__)
 
 # ══════════════════════════════════════════════════════════
 # CONFIGURAÇÕES
 # ══════════════════════════════════════════════════════════
-TOKEN = os.getenv(
-    "TOKEN",
-    "8790169082:AAEqhlwMh5X-6pPGzjp6SgE9rHe5IO5nHvY",
-)
-
+TOKEN        = os.getenv("TOKEN",        "8790169082:AAEqhlwMh5X-6pPGzjp6SgE9rHe5IO5nHvY")
 LINK_ENTREGA = os.getenv("LINK_ENTREGA", "https://t.me/Flavinahbot")
 
-# ══════════════════════════════════════════════════════════
-# MÍDIAS (File IDs)
-# ══════════════════════════════════════════════════════════
+# ── File IDs das mídias ───────────────────────────────────
 AUDIO_1 = "AwACAgEAAxkBAAPDagO9XdZYKv9_M-_F4GAF1B_d8-0AAnwGAALagiFEYK8SjDXgbrA7BA"
 AUDIO_2 = "AwACAgEAAxkBAAOragO8ntVXUe33j6mcwSds5sNAJa0AAnYGAALagiFE5m4QqBjT_CM7BA"
 AUDIO_3 = "AwACAgEAAxkBAAOvagO8x6finonjz_t2PfcAAUJhNSnzAAJ3BgAC2oIhREoIjn8DBrjHOwQ"
 AUDIO_4 = "AwACAgEAAxkBAAOzagO9AAHZX3sS7qgWbcSgPa1o5oXfAAJ4BgAC2oIhRLJ2D1IYZcxJOwQ"
+AUDIO_5 = "AwACAgEAAxkBAAO3agO9HTm_G1cYWnaFeeItGMzl2zYAAnkGAALagiFEMFFUnOSN1U47BA"
+AUDIO_6 = "AwACAgEAAxkBAAO7agO9LMvBA1vnaqYHfDaY--FV4vkAAnoGAALagiFEjkK2u3C9naM7BA"
+AUDIO_7 = "AwACAgEAAxkBAAO_agO9Q8fvZq_k75yeCY7T63XxUx0AAnsGAALagiFE47AunJzKGzM7BA"
 
 VIDEO_1 = "BAACAgEAAxkBAAOSagO6XlYtWkoROh6j9VlpvOOnAYgAAnAGAALagiFEF7_3Rf_BhSI7BA"
 VIDEO_2 = "BAACAgEAAxkBAAOUagO6fle6NhGsATRoEUx288EzWF4AAnEGAALagiFEl6p5skCkVhE7BA"
 VIDEO_3 = "BAACAgEAAxkBAAObagO6sAr3cWOJ21TnfJtOjAVPMegAAnIGAALagiFE9jVtXuW8HUU7BA"
+VIDEO_4 = "BAACAgEAAxkBAAOfagO6vvPkUZYi-ELbVnuE07A_zjIAAnMGAALagiFE-eIlilAmEC47BA"
+VIDEO_5 = "BAACAgEAAxkBAAOjagO6yVwW63smYxewBQg-nZSh9N4AAnQGAALagiFE0xZbqlnRpA87BA"
 
-IMAGE_1 = (
-    "AgACCagEAAxkBAANcagOiTrmhMjEPiiWMLWWrAAGqaU2gAAIMDGsbI1oRRNwOpLHrWtClAQADAgADdwADOwQ"
+IMAGE_1 = "AgACCagEAAxkBAANcagOiTrmhMjEPiiWMLWWrAAGqaU2gAAIMDGsbI1oRRNwOpLHrWtClAQADAgADdwADOwQ"
+IMAGE_2 = "AgACAgEAAxkBAAPHagO9vMPmxnJHayQerq_GdJGAVJoAAhIMaxvagiFEDAqpCxdRkJABAAMCAAN3AAM7BA"
+
+# ══════════════════════════════════════════════════════════
+logging.basicConfig(
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    level=logging.INFO,
 )
+logger = logging.getLogger(__name__)
 
-# Modo captura (use /capturar_id para obter file_id das mídias)
-MODO_CAPTURA = os.getenv("MODO_CAPTURA", "false").lower() == "true"
-
-# Estados do usuário
 user_state: dict[int, int] = {}
 
 
 # ══════════════════════════════════════════════════════════
-# AJUDANTES
+# HELPERS
 # ══════════════════════════════════════════════════════════
 
 async def typing(chat_id: int, ctx: ContextTypes.DEFAULT_TYPE, secs: float = 1.2):
     await ctx.bot.send_chat_action(chat_id=chat_id, action="typing")
     await asyncio.sleep(secs)
 
-
 async def voice_action(chat_id: int, ctx: ContextTypes.DEFAULT_TYPE, secs: float = 1.5):
     await ctx.bot.send_chat_action(chat_id=chat_id, action="upload_voice")
     await asyncio.sleep(secs)
 
-
 async def video_action(chat_id: int, ctx: ContextTypes.DEFAULT_TYPE, secs: float = 2.0):
     await ctx.bot.send_chat_action(chat_id=chat_id, action="upload_video")
     await asyncio.sleep(secs)
-
 
 async def msg(
     update: Update,
@@ -100,7 +89,6 @@ async def capturar_id(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         "Vou te devolver o file_id dela. 📋"
     )
 
-
 async def capturar_midia(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     if not ctx.user_data.get("capturando"):
         return
@@ -126,24 +114,20 @@ async def capturar_midia(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         tipo = "📹 VIDEO_NOTE"
     elif message.document:
         file_id = message.document.file_id
-        if message.document.mime_type and message.document.mime_type.startswith("image/"):
-            tipo = "🖼 IMAGE"
-        else:
-            tipo = "📄 DOCUMENT"
+        tipo = "🖼 IMAGE" if message.document.mime_type and message.document.mime_type.startswith("image/") else "📄 DOCUMENT"
 
     if file_id:
         logger.info("FILE_ID CAPTURADO | %s | %s", tipo, file_id)
         await update.message.reply_text(
             f"{tipo} — File ID capturado! ✅\n\n`{file_id}`\n\n"
-            "Cole esse valor na variável correspondente no Railway. 🚀",
+            "Cole esse valor na variável correspondente. 🚀",
             parse_mode="Markdown",
         )
         ctx.user_data["capturando"] = False
     else:
         await update.message.reply_text(
             "⚠️ Não detectei uma mídia válida.\n"
-            "Envie uma foto, áudio ou vídeo direto no chat.\n"
-            "Se você enviou texto, tente novamente com a mídia correta."
+            "Envie uma foto, áudio ou vídeo direto no chat."
         )
 
 
@@ -154,12 +138,7 @@ async def capturar_midia(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
     user_state[uid] = 1
-    await msg(
-        update,
-        ctx,
-        "Oieee 👀 \n\n"
-        "Qual é o seu nome?",
-    )
+    await msg(update, ctx, "Oieee 👀 \n\nQual é o seu nome?")
 
 
 # ══════════════════════════════════════════════════════════
@@ -167,66 +146,58 @@ async def start(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
 # ══════════════════════════════════════════════════════════
 
 async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
-    uid = update.effective_user.id
+    uid  = update.effective_user.id
     chat = update.effective_chat.id
     text = (update.message.text or "").strip()
     step = user_state.get(uid, 0)
 
-    # Captura de mídia
+    # Modo captura
     if ctx.user_data.get("capturando"):
         await capturar_midia(update, ctx)
         return
 
-    # 1 - recebe nome
+    # ── 1 · recebe o nome ────────────────────────────────
     if step == 1:
         user_state[uid] = 2
         nome = text.split()[0].capitalize() if text else (update.effective_user.first_name or "você")
-        ctx.user_data["nome"] = nome  # salva o nome para usar depois
+        ctx.user_data["nome"] = nome
         await msg(update, ctx, f"Que nome lindo, {nome}! 🥰\n\nTudo bem com você?")
-        return
 
-    # 2 - interesse
-    if step == 2:
+    # ── 2 · interesse ────────────────────────────────────
+    elif step == 2:
         user_state[uid] = 3
-        await msg(update, ctx, "Entendii amor, eu estou bem :)\n\n")
+        await msg(update, ctx, "Entendii amor, eu estou bem :)")
         await asyncio.sleep(3)
-        await msg(update, ctx, "Pera  \n\n")
-        await asyncio.sleep(3)
-        await msg(update, ctx, "você consegue escutar áudio? ta meio dificil escrever kkk  😏\n\n")
-        return
+        await msg(update, ctx, "você consegue escutar áudio? ta meio difícil escrever kkk 😏")
 
-    # 3 - áudio 1
-    if step == 3:
+    # ── 3 · ÁUDIO 1 ──────────────────────────────────────
+    elif step == 3:
         user_state[uid] = 4
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_1)
-        await msg(update, ctx, "Se você quiser  \n\n", delay=2)
-        return
+        await msg(update, ctx, "Se você quiser \n\n", delay=2)
 
-    # 4 - vídeo 1
-    if step == 4:
+    # ── 4 · VÍDEO 1 ──────────────────────────────────────
+    elif step == 4:
         user_state[uid] = 5
         await video_action(chat, ctx)
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_1)
         await msg(update, ctx, "Fiquei \n\n", delay=2)
-        return
 
-    # 5 - conhece?
-    if step == 5:
+    # ── 5 ────────────────────────────────────────────────
+    elif step == 5:
         user_state[uid] = 6
-        await msg(update, ctx, "ah, ne ")
-        return
+        await msg(update, ctx, "ah, nem me apresentei direito \n\n")
 
-    # 6 - áudio 2
-    if step == 6:
+    # ── 6 · ÁUDIO 2 ──────────────────────────────────────
+    elif step == 6:
         user_state[uid] = 7
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_2)
-        await msg(update, ctx, "Se você quiser eu te mando ", delay=2)
-        return
+        await msg(update, ctx, "Se você quiser eu te mando", delay=2)
 
-    # 7 - áudio 3 + vídeo 2
-    if step == 7:
+    # ── 7 · ÁUDIO 3 + VÍDEO 2 ───────────────────────────
+    elif step == 7:
         user_state[uid] = 8
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_3)
@@ -235,64 +206,83 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_2)
         await asyncio.sleep(8)
         await typing(chat, ctx)
-        await msg(update, ctx, "Gostou,  \n\n", delay=2)
-        return
+        await msg(update, ctx, "Gostou? \n\n", delay=2)
 
-    # 8 - áudio 4
-    if step == 8:
+    # ── 8 · ÁUDIO 4 ──────────────────────────────────────
+    elif step == 8:
         user_state[uid] = 9
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_4)
-        await msg(update, ctx, "Melhor que uma foto, um vi\n\n")
-        return
+        await msg(update, ctx, "Melhor que uma foto, um vide \n\n")
 
-    # 9 - vídeo 3
-    if step == 9:
+    # ── 9 · VÍDEO 3 ──────────────────────────────────────
+    elif step == 9:
         user_state[uid] = 10
         await video_action(chat, ctx)
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_3)
-        await msg(update, ctx, "Esse ", delay=2)
-        return
+        await msg(update, ctx, "Esse vídeo \n\n", delay=2)
 
-    # ══════════════════════════════════════════════════════
-    # 10 - imagem + suspense + envia o LINK
-    # CORREÇÃO: removido asyncio.sleep(120) e delay= inválido
-    # ══════════════════════════════════════════════════════
-    if step == 10:
-        user_state[uid] = 99
+    # ── 10 · ÁUDIO 5 ─────────────────────────────────────
+    elif step == 10:
+        user_state[uid] = 11
+        await voice_action(chat, ctx)
+        await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_5)
+        await msg(update, ctx, "Tá vendo? É EXATAMENTE isso que você leva! 🔥\n\nBora? Me manda um \"quero\" 👇", delay=2)
 
-        # Envia a imagem
+    # ── 11 · ÁUDIO 6 + VÍDEO 4 ──────────────────────────
+    elif step == 11:
+        user_state[uid] = 12
+        await voice_action(chat, ctx)
+        await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_6)
+        await asyncio.sleep(2)
+        await video_action(chat, ctx)
+        await ctx.bot.send_video(chat_id=chat, video=VIDEO_4)
+        await asyncio.sleep(8)
+        await typing(chat, ctx)
+        await msg(update, ctx, "Ainda aqui? 😍\n\nTudo que você viu está no pacote. Gostou? 👇")
+
+    # ── 12 · ÁUDIO 7 ─────────────────────────────────────
+    elif step == 12:
+        user_state[uid] = 13
+        await voice_action(chat, ctx)
+        await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_7)
+        await msg(update, ctx, "Tá chegando no melhor… 🤭\n\nPrepara o coração! 💥", delay=2)
+
+    # ── 13 · VÍDEO 5 ─────────────────────────────────────
+    elif step == 13:
+        user_state[uid] = 14
+        await video_action(chat, ctx)
+        await ctx.bot.send_video(chat_id=chat, video=VIDEO_5)
+        await msg(update, ctx, "PRONTO! É ISSO! 🔥🔥🔥\n\nAgora você já sabe o que vai levar…\n\nVem fechar! 👇", delay=2)
+
+    # ── 14 · IMAGEM 1 + suspense ─────────────────────────
+    elif step == 14:
+        user_state[uid] = 15
         await ctx.bot.send_photo(chat_id=chat, photo=IMAGE_1)
+        await asyncio.sleep(5)
+        await typing(chat, ctx)
+        await msg(update, ctx, "São mais de x conteúdos exclusivos… 🤭")
+        await msg(update, ctx, "Ainda pensando? 🤔\n\nOlha, esse preço é por TEMPO LIMITADO…", delay=2)
+        await msg(update, ctx, "Quando eu fechar as vagas, acabou. Simples assim. 💛", delay=2)
 
-        # Suspense curto (3 segundos — ajuste como quiser)
+    # ── 15 · IMAGEM 2 + link final ───────────────────────
+    elif step == 15:
+        user_state[uid] = 99
+        await ctx.bot.send_photo(chat_id=chat, photo=IMAGE_2)
         await asyncio.sleep(3)
 
-        # Mensagem de quantidade de conteúdos
-        await typing(chat, ctx)
-        await update.message.reply_text("São mais de x conteúdos")
+        nome = ctx.user_data.get("nome") or (update.effective_user.first_name or "você")
 
-        # Pega o nome salvo (ou tenta pelo texto atual)
-        nome = ctx.user_data.get("nome") or (
-            text.split()[0].capitalize() if text else (update.effective_user.first_name or "você")
+        await msg(update, ctx,
+            f"{nome}, vou te mandar o acesso e a gente combina certinho! 💕\n\n"
+            "Aqui está seu link de acesso 🥰",
+            delay=2
         )
+        await msg(update, ctx, f"👉 {LINK_ENTREGA}", delay=1)
 
-        # Mensagem de acesso
-        await msg(
-            update,
-            ctx,
-            f"{nome} vou te mandar o acesso e a gente combina certinho! 💕\n\n"
-            "Aqui está seu link de acesso: 🥰",
-            delay=2,
-        )
-
-        # ✅ Envia o link de entrega
-        await msg(update, ctx, f"{LINK_ENTREGA}", delay=1)
-        return
-
-    # 99 - fim
-    if step == 99:
+    # ── 99 · fim ─────────────────────────────────────────
+    elif step == 99:
         await msg(update, ctx, "Já te enviei tudo! 😊 Qualquer dúvida é só chamar aqui. 💛")
-        return
 
 
 # ══════════════════════════════════════════════════════════
@@ -309,25 +299,15 @@ def main():
         .build()
     )
 
-    # Comandos
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("capturar_id", capturar_id))
-
-    # Captura de mídias em modo de captura
-    app.add_handler(
-        MessageHandler(
-            filters.PHOTO | filters.VIDEO | filters.AUDIO | filters.VOICE,
-            capturar_midia,
-        )
-    )
-
-    # Mensagens — o handler principal decide o que fazer
+    app.add_handler(MessageHandler(
+        filters.PHOTO | filters.VIDEO | filters.AUDIO | filters.VOICE,
+        capturar_midia
+    ))
     app.add_handler(MessageHandler(filters.ALL & ~filters.COMMAND, handle))
 
     logger.info("✅ Bot rodando!")
-    if MODO_CAPTURA:
-        logger.info("⚠️ MODO CAPTURA ATIVO — use /capturar_id para obter file_ids")
-
     app.run_polling()
 
 

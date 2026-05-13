@@ -267,6 +267,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             "Posso amor?",
             delay=2
         )
+
    # ── 7 · ÁUDIO 3 + VÍDEO 2 ────────────────────────────
     elif step == 7:
         user_state[uid] = 8
@@ -288,28 +289,34 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_4)
         await msg(update, ctx,
-            "Melhor que uma foto, um videozinho 🔥\n\n",
+            "Melhor que uma foto, um videozinho 🔥\n\n"
            
         )
 
-   # ── 10 · VÍDEO 1 ───────────────────────────────────────
+   # ── 9 · VÍDEO 1 ───────────────────────────────────────
     elif step == 9:
         user_state[uid] = 10
         await video_action(chat, ctx)
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_3)
         await msg(update, ctx,
-            "São mais de x conteúdos e várias fotinhas dando muito o cuzinho, masturbando até gozar VÍDEOS COM MINHAS AMIGUINHASS e muito mais 🔥\n\n", 
-
+            "Esse vídeozinho que Mandei tem 4 minitos e no final gozei bem gostoso  🔥\n\n"
+            "Tenho muuiito mais amor, o vip que eu to vendendo tem vários vídeos, inclusive varios videos dando muito o meu cuzinho.",
             delay=2
         )
 
-    # ── 11 · conhece? ──────────────────────────────────────
+    # ── 11 · IMAGEM + urgência ────────────────────────────
     elif step == 10:
         user_state[uid] = 11
-        await msg(update, ctx,
-            "Normalmente eu vendo mais caro mas hoje tô deixando entrar pro R$ 19,99"
+        await ctx.bot.send_photo(chat_id=chat, photo=IMAGE_1)
+        await asyncio.sleep(120)  # 2 minutos de suspense
+        await typing(chat, ctx)
+        await update.message.reply_text(
+            "São mais de x conteúdos e várias fotinhas dando muito o cuzinho, masturbando até gozar VÍDEOS COM MINHAS AMIGUINHASS e muito mais \n\n"
+            "Normalmente eu vendo mais caro mas hoje tô deixando entrar pro R$ 19,99😏"
+            "Se você comprar agora podemos marcar uma chamadinha de vídeo ou até mesmo se encontrar possoalmente",
+            delay=2
         )
-
+ 
     # ── 11 · conhece? ──────────────────────────────────────
     elif step == 11:
         user_state[uid] = 12
@@ -318,10 +325,17 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             "Posso gerar o link amor?"
             
         )
-
-    # ── 9 · apresenta pacote ──────────────────────────────
+     # ── 11 · conhece? ──────────────────────────────────────
     elif step == 12:
         user_state[uid] = 13
+        await msg(update, ctx,
+            "https://t.me/Flavinahbot"
+
+        )
+
+     # ── 9 · apresenta pacote ──────────────────────────────
+    elif step == 13:
+        user_state[uid] = 14
         await msg(update, ctx,
             "Olha o que tem no pacote completo:\n\n"
             "✅ Conteúdo exclusivo\n"
@@ -340,8 +354,8 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── 7 · ÁUDIO 2 ───────────────────────────────────────
-    elif step == 13:
-        user_state[uid] = 14
+    elif step == 15:
+        user_state[uid] = 16
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_5)
         await msg(update, ctx,
@@ -351,8 +365,8 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── 8 · ÁUDIO 3 + VÍDEO 2 ────────────────────────────
-    elif step == 14:
-        user_state[uid] = 15
+    elif step == 16:
+        user_state[uid] = 17
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_6)
         await asyncio.sleep(2)
@@ -367,8 +381,8 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── 9 · mais um áudio ─────────────────────────────────
-    elif step == 15:
-        user_state[uid] = 16
+    elif step == 17:
+        user_state[uid] = 18
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_7)
         await msg(update, ctx,
@@ -379,8 +393,8 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── 10 · VÍDEO final ──────────────────────────────────
-    elif step == 16:
-        user_state[uid] = 17
+    elif step == 19:
+        user_state[uid] = 20
         await video_action(chat, ctx)
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_5)
         await msg(update, ctx,
@@ -396,8 +410,8 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── 11 · IMAGEM + urgência ────────────────────────────
-    elif step == 17:
-        user_state[uid] = 18
+    elif step == 20:
+        user_state[uid] = 21
         await ctx.bot.send_photo(chat_id=chat, photo=IMAGE_2)
         await asyncio.sleep(120)  # 2 minutos de suspense
         await typing(chat, ctx)
@@ -417,12 +431,12 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── 12 · dúvida ou confirmação ────────────────────────
-    elif step == 18:
+    elif step == 21:
         if "2" in text or "dúvida" in text.lower() or "duvida" in text.lower():
             await msg(update, ctx, "Claro! Me faz a pergunta que te respondo agora mesmo 😊")
             # fica no passo 12
         else:
-            user_state[uid] = 19
+            user_state[uid] = 22
             await msg(update, ctx,
                 f"Ótimo! 🎉 Que decisão incrível!\n\n"
                 f"Me confirma: você quer garantir o pacote por *{PIX_VALUE}*?",
@@ -430,8 +444,8 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             )
 
     # ── 13 · envia PIX ────────────────────────────────────
-    elif step == 19:
-        user_state[uid] = 20
+    elif step == 22:
+        user_state[uid] = 23
         await msg(update, ctx, "SHOW! Preparando seu pagamento… 💳")
         await msg(update, ctx,
             "📲 *PAGAMENTO VIA PIX*\n\n"
@@ -444,7 +458,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
     # ── 14 · recebe comprovante ───────────────────────────
-    elif step == 20:
+    elif step == 23:
         user_state[uid] = 99
         await msg(update, ctx, "Recebi! ✅ Confirmando o pagamento…\n\nUm segundo! ⏳")
         await msg(update, ctx,

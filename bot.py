@@ -7,6 +7,7 @@ Hospedado no Railway — Python 3.11 + PTB 21.9
 import asyncio
 import logging
 import os
+import aiohttp
 
 from telegram import Update
 from telegram.ext import (
@@ -67,6 +68,9 @@ IMAGE_2 = "AgACAgEAAxkBAAPHagO9vMPmxnJHayQerq_GdJGAVJoAAhIMaxvagiFEDAqpCxdRkJABA
 # Mude para True temporariamente para capturar os file_ids das mídias
 # Depois volte para False antes de subir para produção
 MODO_CAPTURA = os.getenv("MODO_CAPTURA", "false").lower() == "true"
+
+# ── API Nexus (Pagamento) ─────────────────────────────
+NEXUS_API_KEY = os.getenv("NEXUS_API_KEY", "nxp_live_3fa07364bb2a0ed3142b439dd4cd230e8ab81eadb45b9f9f0f6f80b8327887c2")
 # ══════════════════════════════════════════════════════════
 
 logging.basicConfig(
@@ -77,6 +81,8 @@ logger = logging.getLogger(__name__)
 
 # Guarda em qual passo cada usuário está
 user_state: dict[int, int] = {}
+# Armazena o link de checkout temporário por usuário
+user_checkout_link: dict[int, str] = {}
 
 
 # ══════════════════════════════════════════════════════════
@@ -84,6 +90,57 @@ user_state: dict[int, int] = {}
 #   Use /capturar_id e envie qualquer mídia pro bot.
 #   O file_id aparecerá no terminal e será enviado de volta pra você.
 # ══════════════════════════════════════════════════════════
+
+async def gerar_checkout_link(valor: float = 19.99, email: str = "cliente@email.com", nome: str = "Cliente") -> str:
+    """Gera um link de checkout via API Nexus (tipo madbot)."""
+    url = "https://api.nexuspay.com.br/v1/checkout"
+    
+    headers = {
+        "Authorization": NEXUS_API_KEY,
+        "Content-Type": "application/json"
+    }
+    
+    # Payload inspirado em madbot
+    payload = {
+        "api_key": NEXUS_API_KEY,
+        "amount": int(valor * 100),  # Nexus usa centavos (1999 = R$ 19.99)
+        "customer": {
+            "email": email,
+            "name": nome
+        },
+        "description": "Pacote Exclusivo",
+        "metadata": {
+            "source": "telegram_bot"
+        }
+    }
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, json=payload, headers=headers, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+                if resp.status in [200, 201]:
+                    data = await resp.json()
+                    # Tenta vários nomes de campo que a API pode retornar
+                    link = (
+                        data.get("checkout_url") or 
+                        data.get("url") or 
+                        data.get("payment_link") or
+                        data.get("link") or
+                        data.get("order_url")
+                    )
+                    if link:
+                        logger.info(f"✅ Checkout Nexus gerado: {link}")
+                        return link
+                    else:
+                        logger.error(f"Resposta Nexus sem link: {data}")
+                        return None
+                else:
+                    error_text = await resp.text()
+                    logger.error(f"❌ Erro API Nexus ({resp.status}): {error_text}")
+                    return None
+    except Exception as e:
+        logger.error(f"❌ Erro ao conectar com Nexus: {e}")
+        return None
+
 
 async def capturar_id(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     """Ativa o modo de captura de file_id para o usuário."""
@@ -317,20 +374,46 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
             delay=2
         )
  
-    # ── 11 · conhece? ──────────────────────────────────────
+    # ── 11 · Gera link de checkout ───────────────────────────
     elif step == 11:
         user_state[uid] = 12
+        nome = (update.effective_user.first_name or "Cliente")
+        email = f"user_{uid}@telegram.bot"
+        
         await msg(update, ctx,
-            "Te manda o acesso e a gente combina certinho  \n\n"
-            "Posso gerar o link amor?"
-            
+            "Te manda o acesso e a gente combina certinho! 💕\n\n"
+            "Deixa eu gerar seu link de pagamento... ⏳"
         )
-     # ── 11 · conhece? ──────────────────────────────────────
+        
+        # Gera o checkout via API Nexus (tipo madbot)
+        checkout_link = await gerar_checkout_link(19.99, email, nome)
+        
+        if checkout_link:
+            user_checkout_link[uid] = checkout_link
+            await asyncio.sleep(1)
+            await typing(chat, ctx, 1)
+            
+            # Envia o link de forma elegante (tipo madbot)
+            await update.message.reply_text(
+                f"✅ Link gerado! Clica aqui pra pagar:\n\n"
+                f"👉 {checkout_link}\n\n"
+                "Depois que confirmar o pagamento, volta aqui! 💳"
+            )
+        else:
+            # Fallback se API falhar
+            await msg(update, ctx,
+                "Houve um erro ao gerar o link de pagamento. 😞\n\n"
+                "Tente novamente em alguns segundos!"
+            )
+            user_state[uid] = 11  # Tenta novamente
+    
+    # ── 12 · Confirmação de pagamento ──────────────────────────
     elif step == 12:
         user_state[uid] = 13
         await msg(update, ctx,
-            "https://t.me/Flavinahbot"
-
+            "Ótimo! Seu pagamento foi recebido! ✅\n\n"
+            f"Bem-vindo(a) ao pacote exclusivo! 🎉\n\n"
+            f"👉 Seu acesso: {LINK_ENTREGA}"
         )
 
      # ── 9 · apresenta pacote ──────────────────────────────

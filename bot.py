@@ -18,25 +18,26 @@ from telegram.ext import (
 # CONFIGURAÇÕES
 # ══════════════════════════════════════════════════════════
 TOKEN        = os.environ["TOKEN"]
-LINK_ENTREGA = os.getenv("LINK_ENTREGA", "https://t.me/seu_canal_aqui")
+LINK_ENTREGA = os.getenv("LINK_ENTREGA", "https://t.me/Flavinahbot")
 
 # ── File IDs das mídias ───────────────────────────────────
-AUDIO_1 = "AwACAgEAAxkBAAPDagO9XdZYKv9_M-_F4GAF1B_d8-0AAnwGAALagiFEYK8SjDXgbrA7BA"
-AUDIO_2 = "AwACAgEAAxkBAAOragO8ntVXUe33j6mcwSds5sNAJa0AAnYGAALagiFE5m4QqBjT_CM7BA"
-AUDIO_3 = "AwACAgEAAxkBAAOvagO8x6finonjz_t2PfcAAUJhNSnzAAJ3BgAC2oIhREoIjn8DBrjHOwQ"
-AUDIO_4 = "AwACAgEAAxkBAAOzagO9AAHZX3sS7qgWbcSgPa1o5oXfAAJ4BgAC2oIhRLJ2D1IYZcxJOwQ"
+AUDIO_1 = "AwACAgEAAxkBAAIKN2oE4zwHq5put-i8m3ty2B_eKhg9AAKZBgAC2oIpRP_DMyd44CZGOwQ"
+AUDIO_2 = "AwACAgEAAxkBAAIKP2oE45iPAR0bVxjmRs3Yy8Ge5HtDAAKbBgAC2oIpRGRg27Y9Kd81OwQ"
+AUDIO_3 = "AwACAgEAAxkBAAIKQ2oE49D-HMOaDCObKKbB5onQM0XWAAKcBgAC2oIpRC7xnG0onx5oOwQ"
+AUDIO_4 = "AwACAgEAAxkBAAIKR2oE5AfWHjv4ELNaPbwE_S9KrUtVAAKdBgAC2oIpRN5-11Pv0VisOwQ"
 AUDIO_5 = "AwACAgEAAxkBAAO3agO9HTm_G1cYWnaFeeItGMzl2zYAAnkGAALagiFEMFFUnOSN1U47BA"
 AUDIO_6 = "AwACAgEAAxkBAAO7agO9LMvBA1vnaqYHfDaY--FV4vkAAnoGAALagiFEjkK2u3C9naM7BA"
 AUDIO_7 = "AwACAgEAAxkBAAO_agO9Q8fvZq_k75yeCY7T63XxUx0AAnsGAALagiFE47AunJzKGzM7BA"
 
-VIDEO_1 = "BAACAgEAAxkBAAOSagO6XlYtWkoROh6j9VlpvOOnAYgAAnAGAALagiFEF7_3Rf_BhSI7BA"
-VIDEO_2 = "BAACAgEAAxkBAAOUagO6fle6NhGsATRoEUx288EzWF4AAnEGAALagiFEl6p5skCkVhE7BA"
+VIDEO_1 = "CgACAgEAAxkBAAIKS2oE5NbhDGsNyzOeKQ4Oanfxz3q4AAKfBgAC2oIpRIKn-t2fIu5QOwQ"
+VIDEO_2 = "BAACAgEAAxkBAAIKVGoE5vNBmS28CVZgL9uRmkp0adICAAKgBgAC2oIpRDFGp6TwUHL9OwQ"
 VIDEO_3 = "BAACAgEAAxkBAAObagO6sAr3cWOJ21TnfJtOjAVPMegAAnIGAALagiFE9jVtXuW8HUU7BA"
 VIDEO_4 = "BAACAgEAAxkBAAOfagO6vvPkUZYi-ELbVnuE07A_zjIAAnMGAALagiFE-eIlilAmEC47BA"
 VIDEO_5 = "BAACAgEAAxkBAAOjagO6yVwW63smYxewBQg-nZSh9N4AAnQGAALagiFE0xZbqlnRpA87BA"
 
-IMAGE_1 = "AgACCagEAAxkBAANcagOiTrmhMjEPiiWMLWWrAAGqaU2gAAIMDGsbI1oRRNwOpLHrWtClAQADAgADdwADOwQ"
-IMAGE_2 = "AgACAgEAAxkBAAPHagO9vMPmxnJHayQerq_GdJGAVJoAAhIMaxvagiFEDAqpCxdRkJABAAMCAAN3AAM7BA"
+IMAGE_1 = "AgACAgEAAxkBAAIKL2oE4ptTxnZXpXobCbEyEXtMKau2AAI-DGsbwBMRRNvWuNb676VCAQADAgADdwADOwQ"
+IMAGE_2 = "AgACAgEAAxkBAAIKUGoE5iCisdBhbohnr5oCx5EgnI0uAAIlDWsb2oIpREL_hrPCj9k3AQADAgADeAADOwQ"
+
 
 # ══════════════════════════════════════════════════════════
 logging.basicConfig(
@@ -168,33 +169,38 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         user_state[uid] = 3
         await msg(update, ctx, "Entendii amor, eu estou bem :)")
         await asyncio.sleep(3)
-        await msg(update, ctx, "você consegue escutar áudio? ta meio difícil escrever kkk 😏")
+        await msg(update, ctx, "Pera aí que já converso contigo, mo é que tô no banho agora\n\n"
+                  "você consegue escutar áudio? ta meio dificil escrever kkk  😏")
 
     # ── 3 · ÁUDIO 1 ──────────────────────────────────────
     elif step == 3:
         user_state[uid] = 4
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_1)
-        await msg(update, ctx, "Se você quiser \n\n", delay=2)
+        await msg(update, ctx, "Se você quiser eu te mando amor 🔥 \n\n"
+                  "kkk mas você promete que isso fica só entre a gente? \n\n", delay=2)
 
     # ── 4 · VÍDEO 1 ──────────────────────────────────────
     elif step == 4:
         user_state[uid] = 5
         await video_action(chat, ctx)
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_1)
-        await msg(update, ctx, "Fiquei \n\n", delay=2)
+        await msg(update, ctx, "Fiquei até com vergonha agora kkk \n\n", delay=2)
 
     # ── 5 ────────────────────────────────────────────────
     elif step == 5:
         user_state[uid] = 6
-        await msg(update, ctx, "ah, nem me apresentei direito \n\n")
+        await msg(update, ctx, "ah, nem me apresentei direito, meu nome é Miya e fiz 21 aninhos esses dias 😄 \n\n"
+                  "Comecei a morar sozinha aqui ( ip usuário) e faço faculdade online de jornalismo, como não tenho muito tempo pra sair de casa por conta das aulas comecei a vender meus videos e fotos aqui no telegram \n\n"
+                  "Comecei a fazer Conteúdo 18+  escondida, me promete que isso fica só entre a gente? \n\n")
 
     # ── 6 · ÁUDIO 2 ──────────────────────────────────────
     elif step == 6:
         user_state[uid] = 7
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_2)
-        await msg(update, ctx, "Se você quiser eu te mando", delay=2)
+        await msg(update, ctx, "Se você quiser eu te mando amor 🔥 \n\n"
+                  "Posso amor?", delay=2)
 
     # ── 7 · ÁUDIO 3 + VÍDEO 2 ───────────────────────────
     elif step == 7:
@@ -203,35 +209,39 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_3)
         await asyncio.sleep(2)
         await video_action(chat, ctx)
-        await ctx.bot.send_video(chat_id=chat, video=VIDEO_2)
+        await ctx.bot.send_video(chat_id=chat, video=IMAGE_2)
         await asyncio.sleep(8)
         await typing(chat, ctx)
-        await msg(update, ctx, "Gostou? \n\n", delay=2)
+        await msg(update, ctx, "Gostou, lindo? posso mandar outro? \n\n", delay=2)
 
     # ── 8 · ÁUDIO 4 ──────────────────────────────────────
     elif step == 8:
         user_state[uid] = 9
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_4)
-        await msg(update, ctx, "Melhor que uma foto, um vide \n\n")
+        await msg(update, ctx, "Melhor que uma foto, um videozinho 🔥\n\n")
 
     # ── 9 · VÍDEO 3 ──────────────────────────────────────
     elif step == 9:
         user_state[uid] = 10
         await video_action(chat, ctx)
-        await ctx.bot.send_video(chat_id=chat, video=VIDEO_3)
-        await msg(update, ctx, "Esse vídeo \n\n", delay=2)
+        await ctx.bot.send_video(chat_id=chat, video=VIDEO_2)
+        await msg(update, ctx, "Esse vídeozinho que Mandei tem 4 minitos e no final gozei bem gostoso  🔥\n\n"
+                  "Tenho muuiito mais amor, o vip que eu to vendendo tem vários vídeos, inclusive varios videos dando muito o meu cuzinho.", delay=2)
 
     # ── 10 · ÁUDIO 5 ─────────────────────────────────────
     elif step == 10:
         user_state[uid] = 11
         await voice_action(chat, ctx)
-        await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_5)
-        await msg(update, ctx, "Tá vendo? É EXATAMENTE isso que você leva! 🔥\n\nBora? Me manda um \"quero\" 👇", delay=2)
+        await ctx.bot.send_voice(chat_id=chat, voice=IMAGE_1)
+        await msg(update, ctx, "São mais de x conteúdos e várias fotinhas dando muito o cuzinho, masturbando até gozar VÍDEOS COM MINHAS AMIGUINHASS e muito mais \n\n"
+                  "Normalmente eu vendo mais caro mas hoje tô deixando entrar pro R$ 19,99😏\n\n"
+                  "Se você comprar agora podemos marcar uma chamadinha de vídeo ou até mesmo se encontrar possoalmente", delay=2)
 
     # ── 11 · ÁUDIO 6 + VÍDEO 4 ──────────────────────────
     elif step == 11:
-        user_state[uid] = 12
+        user_state[uid] = 15
+
         await voice_action(chat, ctx)
         await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_6)
         await asyncio.sleep(2)
@@ -239,37 +249,13 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_4)
         await asyncio.sleep(8)
         await typing(chat, ctx)
-        await msg(update, ctx, "Ainda aqui? 😍\n\nTudo que você viu está no pacote. Gostou? 👇")
-
-    # ── 12 · ÁUDIO 7 ─────────────────────────────────────
-    elif step == 12:
-        user_state[uid] = 13
-        await voice_action(chat, ctx)
-        await ctx.bot.send_voice(chat_id=chat, voice=AUDIO_7)
-        await msg(update, ctx, "Tá chegando no melhor… 🤭\n\nPrepara o coração! 💥", delay=2)
-
-    # ── 13 · VÍDEO 5 ─────────────────────────────────────
-    elif step == 13:
-        user_state[uid] = 14
-        await video_action(chat, ctx)
-        await ctx.bot.send_video(chat_id=chat, video=VIDEO_5)
-        await msg(update, ctx, "PRONTO! É ISSO! 🔥🔥🔥\n\nAgora você já sabe o que vai levar…\n\nVem fechar! 👇", delay=2)
-
-    # ── 14 · IMAGEM 1 + suspense ─────────────────────────
-    elif step == 14:
-        user_state[uid] = 15
-        await ctx.bot.send_photo(chat_id=chat, photo=IMAGE_1)
-        await asyncio.sleep(5)
-        await typing(chat, ctx)
-        await msg(update, ctx, "São mais de x conteúdos exclusivos… 🤭")
-        await msg(update, ctx, "Ainda pensando? 🤔\n\nOlha, esse preço é por TEMPO LIMITADO…", delay=2)
-        await msg(update, ctx, "Quando eu fechar as vagas, acabou. Simples assim. 💛", delay=2)
+        await msg(update, ctx, "Te manda o acesso e a gente combina certinho! 💕\n\n"
+                  "Deixa eu gerar seu link de pagamento... ⏳")
 
     # ── 15 · IMAGEM 2 + link final ───────────────────────
     elif step == 15:
         user_state[uid] = 99
-        await ctx.bot.send_photo(chat_id=chat, photo=IMAGE_2)
-        await asyncio.sleep(3)
+        await asyncio.sleep(2)
 
         nome = ctx.user_data.get("nome") or (update.effective_user.first_name or "você")
 
@@ -283,7 +269,7 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     # ── 99 · fim ─────────────────────────────────────────
     elif step == 99:
         await msg(update, ctx, "Já te enviei tudo! 😊 Qualquer dúvida é só chamar aqui. 💛")
-
+        user_state.pop(uid, None)
 
 # ══════════════════════════════════════════════════════════
 # MAIN

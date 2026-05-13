@@ -24,6 +24,7 @@ TOKEN        = os.getenv("TOKEN",        "8790169082:AAEqhlwMh5X-6pPGzjp6SgE9rHe
 PIX_KEY      = os.getenv("PIX_KEY",      "SEU_PIX_AQUI")
 PIX_VALUE    = os.getenv("PIX_VALUE",    "R$ 00,00")
 LINK_ENTREGA = os.getenv("LINK_ENTREGA", "hhttps://t.me/Flavinahbot")
+LINK_ENTREGA = "https://t.me/Flavinahbot"
 
 # ── File IDs das mídias ───────────────────────────────────
 # Use o comando /capturar_id para descobrir o file_id de cada mídia
@@ -438,7 +439,6 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     # ── 13 · envia PIX ────────────────────────────────────
     elif step == 22:
         user_state[uid] = 23
-        await ctx.bot.send_link(chat_id=chat, LINK_ENTREGA=LINK_ENTREGA)
         await msg(update, ctx, "SHOW! Preparando seu pagamento… 💳")
         await msg(update, ctx,
             "📲 *PAGAMENTO VIA PIX*\n\n"

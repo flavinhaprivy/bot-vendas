@@ -293,8 +293,8 @@ async def handle(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
         )
 
    # ── 10 · VÍDEO 1 ───────────────────────────────────────
-    elif step == 4:
-        user_state[uid] = 5
+    elif step == 9:
+        user_state[uid] = 10
         await video_action(chat, ctx)
         await ctx.bot.send_video(chat_id=chat, video=VIDEO_3)
         await msg(update, ctx,
